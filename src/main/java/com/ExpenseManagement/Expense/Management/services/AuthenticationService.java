@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ExpenseManagement.Expense.Management.dto.RegisterDTO;
@@ -31,7 +32,9 @@ public class AuthenticationService implements UserDetailsService{
             throw new UserAlreadyExistsException("User already exists with this email!");
         }
 
-        User newUser = new User(data.getName(), data.getLogin(), data.getPassword());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+
+        User newUser = new User(data.getName(), data.getLogin(), encryptedPassword);
 
         this.repository.save(newUser);
 
