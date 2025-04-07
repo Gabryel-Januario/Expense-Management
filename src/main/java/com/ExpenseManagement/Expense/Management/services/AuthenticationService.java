@@ -1,6 +1,8 @@
 package com.ExpenseManagement.Expense.Management.services;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +28,11 @@ public class AuthenticationService implements UserDetailsService{
     @Autowired
     private UserRepository repository;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationService(@Lazy AuthenticationManager authenticationManager){
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -52,8 +58,10 @@ public class AuthenticationService implements UserDetailsService{
 
     public Authentication UserLogin(LoginRequestDTO data) {
         try{
-            UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(data.getLogin(), data.getPassword());
-            Authentication auth = authenticationManager.authenticate(usernamePassword);
+            UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(
+                    data.getLogin(), data.getPassword()
+                );
+            Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 
             return auth;
         }catch(BadCredentialsException e ){

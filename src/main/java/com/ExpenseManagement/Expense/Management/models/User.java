@@ -32,6 +32,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    public User(){}
+
     public User(String name, String login, String password) {
         this.name = name;
         this.login = login;

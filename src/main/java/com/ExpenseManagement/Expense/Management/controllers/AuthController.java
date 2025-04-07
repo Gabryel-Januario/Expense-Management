@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ExpenseManagement.Expense.Management.dto.LoginRequestDTO;
+import com.ExpenseManagement.Expense.Management.dto.LoginResponseDTO;
 import com.ExpenseManagement.Expense.Management.dto.RegisterRequestDTO;
 import com.ExpenseManagement.Expense.Management.models.User;
 import com.ExpenseManagement.Expense.Management.services.AuthenticationService;
+import com.ExpenseManagement.Expense.Management.services.TokenService;
 
 import jakarta.validation.Valid;
 
@@ -22,20 +24,26 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private AuthenticationService service;
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> UserLogin(@RequestBody @Valid LoginRequestDTO data) {
-        Authentication auth = this.service.UserLogin(data);
+    public ResponseEntity<LoginResponseDTO> UserLogin(@RequestBody @Valid LoginRequestDTO data) {
+        Authentication auth = this.authenticationService.UserLogin(data);
 
-        // TODO fix this response
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Login successfully");
+        String token = this.tokenService.generateToken(data);
+
+        LoginResponseDTO response = new LoginResponseDTO(token);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
         
     }
 
     @PostMapping("/register")
     public ResponseEntity<User> UserRegister(@RequestBody @Valid RegisterRequestDTO data) {
-        User user = this.service.UserRegister(data);
+        User user = this.authenticationService.UserRegister(data);
         
         // TODO fix this response
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
