@@ -10,6 +10,7 @@ import com.ExpenseManagement.Expense.Management.dto.LoginRequestDTO;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 @Service
 public class TokenService {
@@ -32,6 +33,19 @@ public class TokenService {
 
         }catch(JWTCreationException e){
             throw new RuntimeException("Error while generating token ", e);
+        }
+    }
+
+    public String valideteToken(String token) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.require(algorithm)
+                .withIssuer("expense-management")
+                .build()
+                .verify(token)
+                .getSubject();
+        }catch( JWTVerificationException exception) {
+            throw new RuntimeException( "Error while verification token", exception);
         }
     }
 
