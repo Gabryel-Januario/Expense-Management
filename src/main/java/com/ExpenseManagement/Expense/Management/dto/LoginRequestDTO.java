@@ -10,12 +10,16 @@ public class LoginRequestDTO {
     @NotBlank(message = "password cannot be blank")
     private String password;
 
-
     public String getLogin() {
         return login;
     }
 
     public String getPassword() {
         return password;
+    }
+
+    public LoginRequestDTO(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 }

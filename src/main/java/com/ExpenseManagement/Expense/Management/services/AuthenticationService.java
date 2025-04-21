@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ExpenseManagement.Expense.Management.dto.LoginRequestDTO;
-import com.ExpenseManagement.Expense.Management.dto.LoginResponseDTO;
+
 import com.ExpenseManagement.Expense.Management.dto.RegisterRequestDTO;
 import com.ExpenseManagement.Expense.Management.exceptions.UserAlreadyExistsException;
 import com.ExpenseManagement.Expense.Management.exceptions.UserNotFoundException;
@@ -44,7 +44,7 @@ public class AuthenticationService implements UserDetailsService{
         return this.repository.findByLogin(username);
     }
     
-    public User UserRegister(RegisterRequestDTO data) {
+    public void UserRegister(RegisterRequestDTO data) {
 
         if(this.repository.findByLogin(data.getLogin()) != null) {
             throw new UserAlreadyExistsException("User already exists with this email!");
@@ -55,8 +55,6 @@ public class AuthenticationService implements UserDetailsService{
         User newUser = new User(data.getName(), data.getLogin(), encryptedPassword);
 
         this.repository.save(newUser);
-
-        return newUser;
     }
 
 

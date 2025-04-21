@@ -13,6 +13,12 @@ public class RegisterRequestDTO {
     @NotBlank(message = "password cannot be empty")
     private String password;
 
+    public RegisterRequestDTO(String name, String login, String password) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }
