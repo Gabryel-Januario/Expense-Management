@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ExpenseManagement.Expense.Management.dto.LoginRequestDTO;
+import com.ExpenseManagement.Expense.Management.dto.LoginResponseDTO;
 import com.ExpenseManagement.Expense.Management.dto.RegisterRequestDTO;
 import com.ExpenseManagement.Expense.Management.exceptions.UserAlreadyExistsException;
 import com.ExpenseManagement.Expense.Management.exceptions.UserNotFoundException;
@@ -27,6 +28,9 @@ public class AuthenticationService implements UserDetailsService{
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private TokenService tokenService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -56,14 +60,16 @@ public class AuthenticationService implements UserDetailsService{
     }
 
 
-    public Authentication UserLogin(LoginRequestDTO data) {
+    public String UserLogin(LoginRequestDTO data) {
         try{
             UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(
                     data.getLogin(), data.getPassword()
                 );
-            Authentication auth = this.authenticationManager.authenticate(usernamePassword);
+            this.authenticationManager.authenticate(usernamePassword);
+            
+            String token = this.tokenService.generateToken(data);
 
-            return auth;
+            return token;
         }catch(BadCredentialsException e ){
             throw new UserNotFoundException("User not found or invalid credentials");
         }
