@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ExpenseManagement.Expense.Management.exceptions.UserNotFoundException;
+import com.ExpenseManagement.Expense.Management.models.User;
 import com.ExpenseManagement.Expense.Management.repositories.UserRepository;
 import com.ExpenseManagement.Expense.Management.services.TokenService;
 
@@ -52,7 +54,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     if(token != null) {
         try{
             String login = this.tokenService.valideteToken(token);
-            UserDetails user = this.userRepository.findByLogin(login);
+            User user = this.userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException("User not found"));
 
             UsernamePasswordAuthenticationToken authentication  = new UsernamePasswordAuthenticationToken(user, null ,user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);

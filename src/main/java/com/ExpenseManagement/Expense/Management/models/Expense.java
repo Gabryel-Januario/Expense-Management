@@ -21,7 +21,7 @@ import lombok.Data;
 @Entity(name = "expenses")
 @Table(name = "expenses")
 public class Expense {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -42,6 +42,16 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Expense() {}
+
+    public Expense(String description, BigDecimal amount, LocalDate date, Category category, User user) {
+       this.description = description;
+       this.amount = amount;
+       this.date = date;
+       this.category = category;
+       this.user = user;
+    }
 
 
 }
