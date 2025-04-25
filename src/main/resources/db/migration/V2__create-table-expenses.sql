@@ -1,5 +1,5 @@
 CREATE TABLE expenses (
-    id TEXT UNIQUE NOT NULL PRIMARY KEY,
+    id UUID UNIQUE NOT NULL PRIMARY KEY,
     description TEXT NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     date DATE NOT NULL,

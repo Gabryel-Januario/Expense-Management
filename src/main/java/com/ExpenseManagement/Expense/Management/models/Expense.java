@@ -2,6 +2,7 @@ package com.ExpenseManagement.Expense.Management.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.ExpenseManagement.Expense.Management.Enum.Category;
 
@@ -24,7 +25,7 @@ public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
     private String description;

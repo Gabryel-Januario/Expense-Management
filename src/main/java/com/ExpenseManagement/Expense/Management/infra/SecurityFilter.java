@@ -47,13 +47,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         return;
     }
 
-
-
     String token = this.recoverToken(request);
 
     if(token != null) {
         try{
-            String login = this.tokenService.valideteToken(token);
+            String login = this.tokenService.validateToken(token);
             User user = this.userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException("User not found"));
 
             UsernamePasswordAuthenticationToken authentication  = new UsernamePasswordAuthenticationToken(user, null ,user.getAuthorities());
@@ -61,7 +59,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         } catch (RuntimeException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
-            response.getWriter().write("Unauthorized: Invalid or expired token.");
+            response.getWriter().write("Unauthorized: Invalid or expired token." );
+            System.out.println(e.getMessage());
             return;  
         } 
     }else {

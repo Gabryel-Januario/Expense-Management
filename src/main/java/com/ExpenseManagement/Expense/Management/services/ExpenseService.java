@@ -1,11 +1,16 @@
 package com.ExpenseManagement.Expense.Management.services;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.ExpenseManagement.Expense.Management.Enum.Category;
 import com.ExpenseManagement.Expense.Management.dto.ExpenseRequestDTO;
 import com.ExpenseManagement.Expense.Management.dto.ExpenseResponseDTO;
+import com.ExpenseManagement.Expense.Management.exceptions.ExpenseNotFoundException;
 import com.ExpenseManagement.Expense.Management.exceptions.UserNotFoundException;
 import com.ExpenseManagement.Expense.Management.models.Expense;
 import com.ExpenseManagement.Expense.Management.models.User;
@@ -35,4 +40,65 @@ public class ExpenseService {
         return expenseResponseDTO;
     }
     
+    public List<ExpenseResponseDTO> getAll(Authentication authentication) {
+        String login = authentication.getName();
+        User user = this.userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<Expense> expenses = user.getExpenses();
+
+        List<ExpenseResponseDTO> expensesDTO = expenses.stream()
+        .map(expense -> new ExpenseResponseDTO(
+            expense.getDescription(), 
+            expense.getAmount(), 
+            expense.getDate(), 
+            expense.getCategory())).toList();
+
+        return expensesDTO;
+    }
+
+    public ExpenseResponseDTO getById(UUID id) {
+        Expense expense = this.expenseRepository.findById(id)
+        .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+
+        ExpenseResponseDTO expenseDTO = new ExpenseResponseDTO(
+                                            expense.getDescription(), 
+                                            expense.getAmount(), 
+                                            expense.getDate(), 
+                                            expense.getCategory());
+
+        return expenseDTO;
+    }
+
+    public void update(ExpenseRequestDTO data, UUID id) {
+
+        Expense expense = this.expenseRepository.findById(id)
+        .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+
+        if(data.getDescription() != null && !data.getDescription().isBlank()) {
+            expense.setDescription(data.getDescription());
+        }
+        if(data.getAmount() != null) {
+            expense.setAmount(data.getAmount());
+        }
+        if (data.getDate() != null) {
+            expense.setDate(data.getDate());
+        }
+        if (data.getCategory() != null && !data.getCategory().toString().isBlank()) {
+            try {
+                Category categoryEnum = Category.valueOf(data.getCategory().toString().toUpperCase());
+                expense.setCategory(categoryEnum);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid category: " + data.getCategory());
+            }
+        }
+
+        this.expenseRepository.save(expense);
+    }
+
+    public void delete(UUID id) {
+        this.expenseRepository.findById(id)
+        .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+
+        this.expenseRepository.deleteById(id);
+    }
 }

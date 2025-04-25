@@ -36,11 +36,11 @@ public class TokenService {
         }
     }
 
-    public String valideteToken(String token) {
+    public String validateToken(String token) {
         try{
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             return JWT.require(algorithm)
-                .withIssuer("expense-management")
+                .withIssuer("expense-Management")
                 .build()
                 .verify(token)
                 .getSubject();

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import com.ExpenseManagement.Expense.Management.Enum.Category;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
@@ -14,13 +15,13 @@ public class ExpenseRequestDTO {
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @NotBlank(message = "Amount cannot be blank")
+    @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
 
-    @NotBlank(message = "Date cannot be blank")
+    @NotNull(message = "Date cannot be null")
     private LocalDate date;
 
-    @NotBlank(message = "Category cannot be blank")
+    @NotNull(message = "Category cannot be null")
     private Category category;
     
 

@@ -1,6 +1,8 @@
 package com.ExpenseManagement.Expense.Management.services;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,10 +47,11 @@ public class AuthenticationService implements UserDetailsService{
     
     public void UserRegister(RegisterRequestDTO data) {
 
-        if(this.repository.findByLogin(data.getLogin()) != null) {
+        Optional<User> existingUser = this.repository.findByLogin(data.getLogin());
+        if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User already exists with this email!");
         }
-
+        
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
 
         User newUser = new User(data.getName(), data.getLogin(), encryptedPassword);

@@ -18,6 +18,6 @@ public enum Category {
     }
 
     public String getDisplayName() {
-        return displayName;
+        return displayName; 
     }
 }
