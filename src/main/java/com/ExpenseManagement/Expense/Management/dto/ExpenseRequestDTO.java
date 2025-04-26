@@ -21,8 +21,5 @@ public class ExpenseRequestDTO {
     @NotNull(message = "Date cannot be null")
     private LocalDate date;
 
-    @NotNull(message = "Category cannot be null")
     private Category category;
-    
-
 }

@@ -9,7 +9,9 @@ public enum Category {
     EDUCATION("Education"),
     ENTERTAINMENT("Entertainment"),
     OTHERS("Others"),
-    GROCERIES("Groceries");
+    GROCERIES("Groceries"),
+    INVESTMENTS("Investments"),
+    PETS("Pets");
 
     private final String displayName;
 
