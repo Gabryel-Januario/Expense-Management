@@ -29,7 +29,6 @@ public class ExpenseResponseDTO {
         this.category = category;
     }
 
-
     public String getDescription() {
         return description;
     }

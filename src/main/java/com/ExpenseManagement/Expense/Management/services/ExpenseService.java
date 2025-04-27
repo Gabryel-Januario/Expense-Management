@@ -36,7 +36,7 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    public String predictCategory(String description, BigDecimal amount) {
+    public Category predictCategory(String description, BigDecimal amount) {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:5000/predict";
@@ -58,9 +58,13 @@ public class ExpenseService {
         );
 
         Map<String, Object> body = response.getBody();
-        String category = (String) body.get("category");
+        String categoryString = (String) body.get("category");
 
-        return category;
+        try {
+            return Category.valueOf(categoryString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid category returned by model: " + categoryString);
+        }
     }
 
     public ExpenseResponseDTO create(ExpenseRequestDTO data, Authentication authentication) {
@@ -68,11 +72,29 @@ public class ExpenseService {
         User user = this.userRepository.findByLogin(userName)
         .orElseThrow(() -> new UserNotFoundException("User not found"));
         
-        Expense expense = new Expense(data.getDescription(), data.getAmount(), data.getDate(), data.getCategory(), user);
+        Category category;
 
+        if(data.getCategory() == null) {
+            category = this.predictCategory(data.getDescription(), data.getAmount());
+        }else{
+            category = data.getCategory();
+        }
+
+        Expense expense = new Expense(
+            data.getDescription(), 
+            data.getAmount(), 
+            data.getDate(), 
+            category, 
+            user);
+        
         this.expenseRepository.save(expense);
 
-        ExpenseResponseDTO expenseResponseDTO = new ExpenseResponseDTO(expense.getDescription(), expense.getAmount(), expense.getDate(), expense.getCategory(), expense.getUser().getId());
+        ExpenseResponseDTO expenseResponseDTO = new ExpenseResponseDTO(
+            expense.getDescription(), 
+            expense.getAmount(), 
+            expense.getDate(), 
+            expense.getCategory(), 
+            expense.getUser().getId());
 
         return expenseResponseDTO;
     }
