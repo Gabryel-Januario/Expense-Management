@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 @RequestMapping("expense")
 public class ExpenseController {
 
-
     @Autowired
     private ExpenseService expenseService;
 
