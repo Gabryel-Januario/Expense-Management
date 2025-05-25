@@ -79,8 +79,9 @@ public class StatisticsAndDashboardService {
         totalLabelCell.setPadding(5);
         table.addCell(totalLabelCell);
         
+        BigDecimal totalExpenses = this.totalExpenseCurrentMonth(authentication);
         
-        PdfPCell totalValueCell = new PdfPCell(new Phrase("R$00000,00", fontHeader));
+        PdfPCell totalValueCell = new PdfPCell(new Phrase("R$" + totalExpenses.toString() , fontHeader));
         totalValueCell.setColspan(3); 
         totalValueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         totalLabelCell.setBackgroundColor(Color.LIGHT_GRAY);

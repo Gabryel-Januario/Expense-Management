@@ -37,7 +37,7 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    @Value("${api.python.ml.url}")
+    @Value("${api.ml.url}")
     private String url;
 
     public Category predictCategory(String description, BigDecimal amount) {
