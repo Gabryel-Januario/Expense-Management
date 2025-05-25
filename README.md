@@ -55,7 +55,7 @@ cd expense-management
 ### Machine Learning API (Python)
 
 ```bash
-# Repositório do Modelo aqui ...
+# Repositório do Modelo aqui (https://github.com/Gabryel-Januario/category-predicition)
 
 # Acesse a pasta do modelo
 cd category-prediction
